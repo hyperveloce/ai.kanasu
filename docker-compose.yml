@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   ollama:
@@ -37,7 +37,7 @@ services:
 
 volumes:
   ollama_data:
-	name: ollama_data
+    name: ollama_data
 
 networks:
   app_network:
