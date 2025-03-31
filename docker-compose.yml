@@ -34,8 +34,11 @@ services:
     environment:
       - MODEL_NAME=llama3:8b
       - MODEL_NAME=7b-instruct-v0.2-q5_K_M
-      - OLLAMA_NUM_PARALLEL=4
-      - OLLAMA_CONTEXT_WINDOW=2048
+      - OLLAMA_CONTEXT_WINDOW=4096 # Increased from your current 2048
+      - OLLAMA_MODEL_PATH=/models # Store models in a specific directory
+      - OLLAMA_HOST=0.0.0.0 # Bind to all interfaces
+      - OLLAMA_TEMPERATURE=0.7
+      - OLLAMA_REPEAT_PENALTY=1.1
     volumes:
       - /mnt/debian.data/ollama_data:/root/.ollama
       - /mnt/debian.data/ollama_models:/models
