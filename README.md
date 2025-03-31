@@ -1,4 +1,8 @@
 
+### OVERVIEW
+
+This repo leverages Docker Compose to quickly deploy Ollama's AI-powered model-building environment with preloaded models, simplifying the setup and management of multi-container applications.
+
 ### HARDWARE
 - RTX 3080 Ti,
 - Ryzen 5600,
