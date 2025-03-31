@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    command: >
+      bash -c "
+        # Pull the first model if it's not already present
+        if [ ! -f /models/$MODEL_1 ]; then
+          ollama pull $MODEL_1;
+        fi;
+        # Pull the second model if it's not already present
+        if [ ! -f /models/$MODEL_2 ]; then
+          ollama pull $MODEL_2;
+        fi;
+        # Start Ollama
+        ollama start"
+    ports:
+      - "11434:11434"
+    environment:
+      - MODEL_NAME=llama3:8b
+      - MODEL_NAME=7b-instruct-v0.2-q5_K_M
+    volumes:
+      - /mnt/debian.data/ollama_data:/root/.ollama
+      - /mnt/debian.data/ollama_models:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 0
+              capabilities: [gpu]
+    networks:
+      - app_network
+
+volumes:
+  ollama_data:
+	name: ollama_data
+
+networks:
+  app_network:
+    driver: bridge
