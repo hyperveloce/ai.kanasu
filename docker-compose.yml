@@ -1,27 +1,41 @@
 version: "3.8"
 
 services:
+  open-webui:
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: "/ollama"
+      dockerfile: Dockerfile
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    volumes:
+      - /mnt/debian.data/open-webui_data:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - "3000:8080" # UI on 3000
+    environment:
+      - "OLLAMA_BASE_URL=http://ollama:11434"
+      - "WEBUI_SECRET_KEY="
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+    networks:
+      - app_network
+
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
     restart: unless-stopped
-    command: >
-      bash -c "
-        # Pull the first model if it's not already present
-        if [ ! -f /models/$MODEL_1 ]; then
-          ollama pull $MODEL_1;
-        fi;
-        # Pull the second model if it's not already present
-        if [ ! -f /models/$MODEL_2 ]; then
-          ollama pull $MODEL_2;
-        fi;
-        # Start Ollama
-        ollama start"
+    command: ["serve"] # Array syntax for clarity
     ports:
       - "11434:11434"
     environment:
       - MODEL_NAME=llama3:8b
       - MODEL_NAME=7b-instruct-v0.2-q5_K_M
+      - OLLAMA_NUM_PARALLEL=4
+      - OLLAMA_CONTEXT_WINDOW=2048
     volumes:
       - /mnt/debian.data/ollama_data:/root/.ollama
       - /mnt/debian.data/ollama_models:/models
@@ -31,7 +45,7 @@ services:
           devices:
             - driver: nvidia
               count: 0
-              capabilities: gpu
+              capabilities: [gpu]
     networks:
       - app_network
 

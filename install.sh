@@ -16,6 +16,21 @@ apt install docker-compose -y
 sudo usermod -aG docker $USER
 sudo systemctl restart docker
 
+# Add NVIDIA’s GPG key for secure package verification
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+# Add the repository to APT sources
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+  sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt install -y nvidia-container-toolkit
+
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+dpkg -l | grep nvidia-container-toolkit
+
 # auto cleanup
 sudo apt autoremove
 
