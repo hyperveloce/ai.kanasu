@@ -1,46 +1,6 @@
 version: "3.8"
 
 services:
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
-    volumes:
-      - /mnt/debian.data/open-webui_data:/app/backend/data
-    depends_on:
-      - ollama
-    ports:
-      - "3000:8080" # UI on 3000
-    environment:
-      - "OLLAMA_BASE_URL=http://ollama:11434"
-      - "WEBUI_SECRET_KEY="
-    extra_hosts:
-      - host.docker.internal:host-gateway
-    restart: unless-stopped
-    networks:
-      - app_network
-
-  # localai:
-  #   image: localai/localai:latest
-  #   container_name: localai
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - DEBUG=true
-  #     - MODELS_PATH=/models
-  #   volumes:
-  #     - /mnt/debian.data/localai_models:/models
-  #     - /mnt/debian.data/localai_data:/data
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: 0
-  #             capabilities: [gpu]
-  #   networks:
-  #     - app_network
-
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
